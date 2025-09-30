@@ -1,6 +1,7 @@
 # IAM Role for Kinesis Data Analytics Studio
 resource "aws_iam_role" "kinesis_analytics_role" {
-  name = "AWSKinesisAnalyticsStudioRole"
+  name                = "AWSKinesisAnalyticsStudioRole"
+  force_detach_policies = true
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -18,7 +19,8 @@ resource "aws_iam_role" "kinesis_analytics_role" {
 
 # IAM Role for Apache Flink Application
 resource "aws_iam_role" "flink_application_role" {
-  name = "AWSFlinkApplicationRole"
+  name                = "AWSFlinkApplicationRole"
+  force_detach_policies = true
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

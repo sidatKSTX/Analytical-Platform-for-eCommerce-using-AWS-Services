@@ -1,6 +1,7 @@
 # IAM Role for AWS Glue Crawler
 resource "aws_iam_role" "glue_crawler_role" {
-  name = "AWSGlueServiceRole-EcommerceCrawler"
+  name                = "AWSGlueServiceRole-EcommerceCrawler"
+  force_detach_policies = true
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -51,11 +52,27 @@ resource "aws_glue_crawler" "ecommerce_crawler" {
   }
 }
 
-# Ensure Glue Crawler Runs After CSV Upload
-resource "null_resource" "trigger_glue_crawler" {
+# Start Glue Crawler using AWS provider
+resource "aws_glue_trigger" "start_crawler" {
+  name = "start-ecommerce-crawler"
+  type = "ON_DEMAND"
+  
+  actions {
+    crawler_name = aws_glue_crawler.ecommerce_crawler.name
+  }
+  
   depends_on = [aws_s3_object.sample_csv_upload, aws_glue_crawler.ecommerce_crawler]
+}
 
+# Trigger the crawler to start
+resource "null_resource" "trigger_glue_crawler" {
+  depends_on = [aws_glue_trigger.start_crawler]
+  
   provisioner "local-exec" {
-    command = "aws glue start-crawler --name ecommerce-user-activity-crawler"
+    command = "sleep 10" # Wait for resources to be ready
+  }
+  
+  triggers = {
+    always_run = timestamp()
   }
 }

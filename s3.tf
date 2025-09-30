@@ -13,7 +13,8 @@ provider "aws" {
 
 # Create S3 bucket
 resource "aws_s3_bucket" "ecommerce_raw" {
-  bucket = "ecommerce-raw-pp-dev"
+  bucket        = "ecommerce-raw-pp-dev"
+  force_destroy = true
 
   tags = {
     Name        = "ecommerce-raw-pp-dev"

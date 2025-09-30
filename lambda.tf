@@ -42,7 +42,8 @@ resource "aws_dynamodb_table" "ecommerce_dynamodb" {
 # IAM Role for Lambda Function
 # ------------------------------------------
 resource "aws_iam_role" "lambda_role" {
-  name = "ecommerce_lambda_role"
+  name                = "ecommerce_lambda_role"
+  force_detach_policies = true
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
